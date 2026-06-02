@@ -8,7 +8,7 @@ The python scripts (interface: `main.py`) provid a CLI style program, for simula
 This model is adopted in the following paper:
 - Guo Y., Yang Y. Shi B. et al. A cell cycle-dependent epigenetic Sisyphus mechanism maintains stem cell fate for shoot branching. (**under review**)
 
-An example of implementing SSA in biocircuits is presented in **[biocircuits_ssa_tutorial.ipynb](./biocircuits_ssa_tutorial.ipynb)**. For a elaborate introduction of this model, see **[STMHybridModel_intro.pdf](./assets/STMHybridModel_intro.pdf)**.
+An example of implementing SSA in biocircuits is presented in **[biocircuits_ssa_tutorial.ipynb](./biocircuits_ssa_tutorial.ipynb)**. For a elaborate introduction of this model, see **[STMHybridModel_intro.pdf](./assets/STMHybridModel_intro-latest.pdf)**.
 
 
 ## Usage
