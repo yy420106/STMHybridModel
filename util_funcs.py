@@ -1,11 +1,11 @@
 import math
-from typing import Any, Optional
+from typing import Any
 
 import numba as nb
 import numpy as np
 import sympy as sp
 
-__all__ = [
+__all__ = [  # noqa: RUF022
     "calc_P_me23",
     "calc_E",
     "calc_beta",
@@ -231,7 +231,7 @@ def calc_prot_fixed_points(
     gamma_transcr: float,
     n_ppt: float,
     kappa: float,
-    p0_array: Optional[np.ndarray] = None,
+    p0_array: np.ndarray | None = None,
     solver_prec: int = 32,
     verify_tol: float = 3e-16,
     ndigits: float = 8,

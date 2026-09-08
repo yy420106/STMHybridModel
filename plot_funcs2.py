@@ -1,15 +1,16 @@
+import datetime
 import math
 import os
-from datetime import datetime
-from typing import Any, Dict, Optional, Sequence, Union
+from collections.abc import Sequence
+from typing import Any
 
 import matplotlib.pyplot as plt
 import numpy as np
 from colorama import Fore, Style, init
-from plot_funcs1 import verbose_print, format_save
+from plot_funcs1 import format_save, verbose_print
 from post_process_funcs import get_samples_gene_activity, get_samples_mek_ratio
 
-__all__ = ["plot_chromMe", "plot_protQuant", "plot_geneAct", "plot_evolution_curves"]
+__all__ = ["plot_chromMe", "plot_protQuant", "plot_geneAct", "plot_evolution_curves"]  # noqa: RUF022
 
 # global variables & settings
 init(autoreset=True)  # colorama mode: autoreset
@@ -72,11 +73,11 @@ def plot_chromMe(
     color: str,
     annot: str,
     m_plot: bool = False,
-    m_color: Optional[str] = None,
+    m_color: str | None = None,
     bg_fill: bool = False,
-    title_annot_timecut: Optional[Sequence[float]] = None,
+    title_annot_timecut: Sequence[float] | None = None,
     xticklabels: bool = True,
-    xlabel: Optional[str] = None,
+    xlabel: str | None = None,
 ) -> None:
     """Module function of `plot_evolution_curves`, used for methylation modification section."""
 
@@ -137,12 +138,12 @@ def plot_protQuant(
     color: str,
     annot: str,
     m_plot: bool = False,
-    m_color: Optional[str] = None,
+    m_color: str | None = None,
     bg_fill: bool = False,
-    title_annot_timecut: Optional[Sequence[float]] = None,
-    arrow_annot_pos: Optional[Sequence[float]] = None,
+    title_annot_timecut: Sequence[float] | None = None,
+    arrow_annot_pos: Sequence[float] | None = None,
     xticklabels: bool = True,
-    xlabel: Optional[str] = None,
+    xlabel: str | None = None,
     y_min_zero: bool = True,
 ) -> None:
     """Module function of `plot_evolution_curves`, used for protein section."""
@@ -227,9 +228,9 @@ def plot_geneAct(
     color: str,
     annot: str,
     bg_fill: bool = False,
-    title_annot_timecut: Optional[Sequence[float]] = None,
+    title_annot_timecut: Sequence[float] | None = None,
     xticklabels: bool = True,
-    xlabel: Optional[str] = None,
+    xlabel: str | None = None,
 ) -> None:
     """Module function of `plot_evolution_curves`, used for gene activity section."""
 
@@ -288,20 +289,20 @@ def plot_evolution_curves(
     samples_protQuant: np.ndarray[Any, float],
     samples_meState: np.ndarray[Any, int],
     samples_transcrT: np.ndarray[Any, float],
-    transcr_stat_bins: Optional[int] = None,
-    custom_mod_show: Optional[Dict[str, bool]] = None,
+    transcr_stat_bins: int | None = None,
+    custom_mod_show: dict[str, bool] | None = None,
     time_unit_day: bool = True,
     m_plot: bool = False,
     bg_fill: bool = False,
-    title_annot_timecut: Optional[Sequence[float]] = None,
-    title_annot_label: Optional[Sequence[str]] = None,
-    arrow_annot_pos: Optional[Sequence[float]] = None,
+    title_annot_timecut: Sequence[float] | None = None,
+    title_annot_label: Sequence[str] | None = None,
+    arrow_annot_pos: Sequence[float] | None = None,
     protQuant_min_zero: bool = True,
-    figName: Optional[str] = None,
-    figSize: Optional[Sequence[float]] = None,
-    figFormat: Union[str, Sequence[str], None] = None,
-    dpi: Optional[int] = None,
-    save_dir: Optional[str] = None,
+    figName: str | None = None,
+    figSize: Sequence[float] | None = None,
+    figFormat: str | Sequence[str] | None = None,
+    dpi: int | None = None,
+    save_dir: str | None = None,
     quiet: bool = False,
 ) -> None:
     """
@@ -320,7 +321,7 @@ def plot_evolution_curves(
         filled with NaN. '#' indicates the length is nontrivial.
     transcr_stat_bins : int32 (optional)
         Number of bins in distribution histogram.
-    custom_mod_show : Dict[str, bool] (optional)
+    custom_mod_show : dict[str, bool] (optional)
         Customized strategy for module displacement. By default all elements (me0/1/2/3, prot,
         gene) are shown. You can provide a bool flag to enable/disable corresponding section.
         e.g. `custom_mod_show = dict(me0=False, prot=Flase)`
@@ -340,7 +341,7 @@ def plot_evolution_curves(
         Whether to set min value of y-axis in protein module to 0.
     """
 
-    p_start = datetime.now()  # plot start
+    p_start = datetime.datetime.now(tz=datetime.UTC)  # plot start
 
     # pre-process
     # module set
@@ -393,7 +394,7 @@ def plot_evolution_curves(
                 m_color=colorDict[f"me{j}"].get("m_color") if m_plot else None,
                 bg_fill=bg_fill,
                 title_annot_timecut=title_annot_timecut,
-                xticklabels=True if mod_idx + 1 == num_mod1 + num_mod2 else False,
+                xticklabels=bool(mod_idx + 1 == num_mod1 + num_mod2),
                 xlabel=f"Time ({time_unit})" if mod_idx + 1 == num_mod1 + num_mod2 else None,
             )
             mod_idx += 1
@@ -412,7 +413,7 @@ def plot_evolution_curves(
             bg_fill=bg_fill,
             title_annot_timecut=title_annot_timecut,
             arrow_annot_pos=arrow_annot_pos,
-            xticklabels=True if mod_idx + 1 == num_mod1 + num_mod2 else False,
+            xticklabels=bool(mod_idx + 1 == num_mod1 + num_mod2),
             xlabel=f"Time ({time_unit})" if mod_idx + 1 == num_mod1 + num_mod2 else None,
             y_min_zero=protQuant_min_zero,
         )
@@ -437,7 +438,7 @@ def plot_evolution_curves(
             annot="gene\nactivity",
             bg_fill=bg_fill,
             title_annot_timecut=title_annot_timecut,
-            xticklabels=True if mod_idx + 1 == num_mod1 + num_mod2 else False,
+            xticklabels=bool(mod_idx + 1 == num_mod1 + num_mod2),
             xlabel=f"Time ({time_unit})" if mod_idx + 1 == num_mod1 + num_mod2 else None,
         )
         mod_idx += 1
@@ -530,7 +531,7 @@ def plot_evolution_curves(
     # save figure
     format_save(fig, figName, figFormat, save_dir, dpi=dpi, bbox_inches="tight")
 
-    p_end = datetime.now()  # plot end
+    p_end = datetime.datetime.now(tz=datetime.UTC)  # plot end
 
     verbose_print(
         message=(

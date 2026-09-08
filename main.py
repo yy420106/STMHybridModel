@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import argparse
+import datetime
 import os
 import platform
 import sys
-from datetime import datetime
-from typing import Optional
 
 import matplotlib.pyplot as plt
 import numba as nb
@@ -19,7 +17,7 @@ nb.config.NUMBA_DEFAULT_NUM_THREADS = os.cpu_count()
 init(autoreset=True)  # colorama mode: autoreset
 
 
-def make_save_dir(cmd: str, temp: bool, cwd: Optional[str] = None) -> str:
+def make_save_dir(cmd: str, temp: bool, cwd: str | None = None) -> str:
     """
     Auxilary function. Make directory to save all possible output files.
 
@@ -48,7 +46,9 @@ def make_save_dir(cmd: str, temp: bool, cwd: Optional[str] = None) -> str:
     save_dir = (
         os.path.join(output_dir, cmd, "temp")
         if temp
-        else os.path.join(output_dir, cmd, datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+        else os.path.join(
+            output_dir, cmd, datetime.datetime.now(tz=datetime.UTC).strftime("%Y-%m-%d_%H-%M-%S")
+        )
     )
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
@@ -70,7 +70,7 @@ def write_command_log(log_dir: str) -> None:
     with open(os.path.join(log_dir, "command.log"), "a") as log:
         if log_dir.endswith("temp"):
             log.write(
-                f"# command ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})\n"
+                f"# command ({datetime.datetime.now(tz=datetime.UTC).strftime('%Y-%m-%d %H:%M:%S')})\n"
             )  # add a timestamp
         else:
             log.write("# command\n")  # omit timestamp this case
@@ -592,7 +592,7 @@ def main():
 
         elif args.command == "rescue":
             # process input
-            args.rescue_strategy = list(set(s.upper() for s in args.rescue_strategy))
+            args.rescue_strategy = list({s.upper() for s in args.rescue_strategy})
 
             main_rescue(
                 num_samples=args.num_samples,

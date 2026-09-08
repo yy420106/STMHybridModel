@@ -2,9 +2,8 @@ import copy
 import math
 from collections import OrderedDict
 from operator import itemgetter
-from typing import Tuple, Union
 
-__all__ = ["load_default_free_param_dict", "update_depend_param", "Parameters"]
+__all__ = ["load_default_free_param_dict", "update_depend_param", "Parameters"]  # noqa:RUF022
 
 """
 Parameters Explanation
@@ -56,7 +55,7 @@ def load_default_free_param_dict() -> OrderedDict[str, float]:
 
     Returns
     -------
-    free_param_dict : Dict[str, float]
+    free_param_dict : OrderedDict[str, float]
         Dictionary that maps model free parameters to their default values.
     """
 
@@ -98,7 +97,7 @@ def update_depend_param(param_dict: OrderedDict[str, float]) -> None:
 
     Parameters
     ----------
-    param_dict : Dict[str, float]
+    param_dict : OrderedDict[str, float]
         Dictionary that maps model parameters to their values.
     """
 
@@ -158,15 +157,13 @@ class Parameters:
 
         self._update_depend_param()  # update dependent paramters
 
-    def get_param(
-        self, param_names: Union[str, Tuple[str, ...]] = "all"
-    ) -> Union[float, Tuple[float, ...]]:
+    def get_param(self, param_names: str | tuple[str, ...] = "all") -> float | tuple[float, ...]:
         """
         Get values of model parameters.
 
         Parameters
         ----------
-        param_names : str | Tuple[str] | List[str] (default="all")
+        param_names : str | tuple[str] | List[str] (default="all")
             Speficy the paramters that to be extract. By default, return all values in the same
             order of parameter dictionary. For string input, besides of single parameter name,
             some special group names are acceptable as well:
@@ -177,11 +174,11 @@ class Parameters:
 
         Returns
         -------
-        param_vals : float | Tuple[float, ...]
+        param_vals : float | tuple[float, ...]
             Values of queried parameters.
         """
 
-        if isinstance(param_names, Tuple):
+        if isinstance(param_names, tuple):
             param_vals = itemgetter(*param_names)(self.param_dict)
         else:
             if param_names == "all":

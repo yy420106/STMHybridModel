@@ -1,7 +1,7 @@
+import datetime
 import math
 import os
-from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional, Tuple
+from typing import Any, Literal
 
 import numba_progress as nbp
 import numpy as np
@@ -20,7 +20,7 @@ from post_process_funcs import get_samples_bistability
 from tqdm import tqdm
 from util_funcs import calc_prot_fixed_points
 
-__all__ = [
+__all__ = [  # noqa: RUF022
     "numba_progress_bar_set",
     "command_hint_print",
     "main_schmdg",
@@ -37,22 +37,22 @@ init(autoreset=True)  # colorama mode: autoreset
 
 def numba_progress_bar_set(
     total: int, disable: bool, leave: bool = True, n: int = 0
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Auxilary function. Build keywords argument dictionary for `numba_progress.ProgressBar`."""
 
-    return dict(
-        total=total,
-        disable=disable,
-        colour="white",
-        desc=Fore.GREEN
+    return {
+        "total": total,
+        "disable": disable,
+        "colour": "white",
+        "desc": Fore.GREEN
         + Style.BRIGHT
         + "\tGillespie SSA"
         + (f"-{n}" if n else "")
         + Style.RESET_ALL,
-        leave=leave,
-        dynamic_ncols=False,
-        ncols=128,
-    )
+        "leave": leave,
+        "dynamic_ncols": False,
+        "ncols": 128,
+    }
 
 
 def command_hint_print(cmd: str, quiet: bool, hint_type: str, **kwargs: Any) -> None:
@@ -78,7 +78,7 @@ def command_hint_print(cmd: str, quiet: bool, hint_type: str, **kwargs: Any) -> 
         )
 
     elif hint_type == "end":
-        time: Tuple[datetime, datetime] = kwargs["time"]
+        time: tuple[datetime.datetime, datetime.datetime] = kwargs["time"]
         verbose_print(
             message=(
                 f"{Fore.YELLOW + Style.BRIGHT}[{cmd}]{Style.RESET_ALL} All mission completed. "
@@ -140,15 +140,15 @@ def command_hint_print(cmd: str, quiet: bool, hint_type: str, **kwargs: Any) -> 
 
 def main_schmdg(
     quiet: bool,
-    prefix: Optional[str],
-    size: Optional[List[float]],
-    format: Optional[List[str]],
-    dpi: Optional[int],
+    prefix: str | None,
+    size: list[float] | None,
+    format: list[str] | None,
+    dpi: int | None,
     save_dir: str,
 ) -> None:
     """Implementation of main program subcommand `schmdg`. See `main.py` for the parameter explanations."""
 
-    m_start = datetime.now()
+    m_start = datetime.datetime.now(tz=datetime.UTC)
     command_hint_print("schmdg", quiet, "init")
 
     name1 = "schematicDiagram1" if prefix is None else prefix + "1"
@@ -161,29 +161,29 @@ def main_schmdg(
     plot_schematic_diagram2(name2, size, format, dpi, save_dir, quiet)
     command_hint_print("schmdg", quiet, "export", fig_name=name2, extra=False)
 
-    m_end = datetime.now()
+    m_end = datetime.datetime.now(tz=datetime.UTC)
     command_hint_print("schmdg", quiet, "end", time=(m_start, m_end))
 
 
 def main_epistb(
     num_samples: int,
-    epi_tag: List[Literal[0, 1, 2, 3]],
+    epi_tag: list[Literal[0, 1, 2, 3]],
     monitor_days: float,
     update_interval: float,
     concise: bool,
-    timeid_step: Optional[int],
+    timeid_step: int | None,
     quiet: bool,
-    prefix: Optional[str],
-    size: Optional[List[float]],
-    prefix2: Optional[str],
-    size2: Optional[List[float]],
-    format: Optional[List[str]],
-    dpi: Optional[int],
+    prefix: str | None,
+    size: list[float] | None,
+    prefix2: str | None,
+    size2: list[float] | None,
+    format: list[str] | None,
+    dpi: int | None,
     save_dir: str,
 ) -> None:
     """Implementation of main program subcommand `epistb`. See `main.py` for the parameter explanations."""
 
-    m_start = datetime.now()
+    m_start = datetime.datetime.now(tz=datetime.UTC)
     command_hint_print("epistb", quiet, "init")
 
     stem_pfp = calc_prot_fixed_points(0, *STMGeneModel().prot_fp_param)[-1]
@@ -217,7 +217,7 @@ def main_epistb(
         )
         command_hint_print("epistb", quiet, "data", data_name=dname)
 
-        command_hint_print("epistb", quiet, "plot", func_name="plot_evolution_curvese", extra=False)
+        command_hint_print("epistb", quiet, "plot", func_name="plot_evolution_curves", extra=False)
         plot_evolution_curves(
             time_records=time_records,
             samples_protQuant=samples_protQuant,
@@ -251,28 +251,28 @@ def main_epistb(
         else:
             command_hint_print("epistb", quiet, "skip")
 
-    m_end = datetime.now()
+    m_end = datetime.datetime.now(tz=datetime.UTC)
     command_hint_print("epistb", quiet, "end", time=(m_start, m_end))
 
 
 def main_dynmcyc(
     num_samples: int,
-    dynamic_factor: List[float],
+    dynamic_factor: list[float],
     equi_cycles: int,
     monitor_days: float,
     update_interval: float,
     hist_interval: float,
     fluc_ratio: float,
     quiet: bool,
-    prefix: Optional[str],
-    size: Optional[List[float]],
-    format: Optional[List[str]],
-    dpi: Optional[int],
+    prefix: str | None,
+    size: list[float] | None,
+    format: list[str] | None,
+    dpi: int | None,
     save_dir: str,
 ) -> None:
     """Implementation of main program subcommand `dynmcyc`. See `main.py` for the parameter explanations."""
 
-    m_start = datetime.now()
+    m_start = datetime.datetime.now(tz=datetime.UTC)
     command_hint_print("dynmcyc", quiet, "init")
 
     stem_pfp = calc_prot_fixed_points(0, *STMGeneModel().prot_fp_param)[-1]
@@ -307,7 +307,7 @@ def main_dynmcyc(
             )
         tc2 = model.time  # time-cut
         print(f"mean: {model.protQuant.mean()}, std: {model.protQuant.std(ddof=1)}")
-        
+
         # accelerate/decelerate
         model.set_free_param(T=factor * T_0)
         with nbp.ProgressBar(**numba_progress_bar_set(model.N, quiet, 2)) as p_bar:
@@ -330,9 +330,7 @@ def main_dynmcyc(
         )
         command_hint_print("dynmcyc", quiet, "data", data_name=dname)
 
-        command_hint_print(
-            "dynmcyc", quiet, "plot", func_name="plot_evolution_curvese", extra=False
-        )
+        command_hint_print("dynmcyc", quiet, "plot", func_name="plot_evolution_curves", extra=False)
         plot_evolution_curves(
             time_records=time_records,
             samples_protQuant=samples_protQuant,
@@ -354,7 +352,7 @@ def main_dynmcyc(
         )
         command_hint_print("dynmcyc", quiet, "export", fig_name=name, extra=False)
 
-    m_end = datetime.now()
+    m_end = datetime.datetime.now(tz=datetime.UTC)
     command_hint_print("dynmcyc", quiet, "end", time=(m_start, m_end))
 
 
@@ -362,25 +360,25 @@ def main_divarrest(
     num_samples: int,
     equi_cycles: int,
     monitor_days: float,
-    arrest_days: List[float],
+    arrest_days: list[float],
     plot_step: int,
     update_interval: float,
     hist_interval: float,
     fluc_ratio: float,
     concise: bool,
-    count_days: Optional[List[float]],
+    count_days: list[float] | None,
     quiet: bool,
-    prefix: Optional[str],
-    size: Optional[List[float]],
-    prefix2: Optional[str],
-    size2: Optional[List[float]],
-    format: Optional[List[str]],
-    dpi: Optional[int],
+    prefix: str | None,
+    size: list[float] | None,
+    prefix2: str | None,
+    size2: list[float] | None,
+    format: list[str] | None,
+    dpi: int | None,
     save_dir: str,
 ) -> None:
     """Implementation of main program subcommand `divarrest`. See `main.py` for the parameter explanations."""
 
-    m_start = datetime.now()  # main start
+    m_start = datetime.datetime.now(tz=datetime.UTC)  # main start
     command_hint_print("divarrest", quiet, "init")
 
     stem_pfp = calc_prot_fixed_points(0, *STMGeneModel().prot_fp_param)[-1]
@@ -513,13 +511,13 @@ def main_divarrest(
     else:
         command_hint_print("divarrest", quiet, "skip")
 
-    m_end = datetime.now()  # main end
+    m_end = datetime.datetime.now(tz=datetime.UTC)  # main end
     command_hint_print("divarrest", quiet, "end", time=(m_start, m_end))
 
 
 def main_rescue(
     num_samples: int,
-    rescue_strategy: List[Literal["M", "A", "S"]],
+    rescue_strategy: list[Literal["M", "A", "S"]],
     arrest_days: int,
     treat_days: int,
     rest_days: int,
@@ -530,15 +528,15 @@ def main_rescue(
     hist_interval: float,
     fluc_ratio: float,
     quiet: bool,
-    prefix: Optional[str],
-    size: Optional[List[float]],
-    format: Optional[List[str]],
-    dpi: Optional[int],
+    prefix: str | None,
+    size: list[float] | None,
+    format: list[str] | None,
+    dpi: int | None,
     save_dir: str,
 ) -> None:
     """Implementation of main program subcommand `rescue`. See `main.py` for the parameter explanations."""
 
-    m_start = datetime.now()  # main start
+    m_start = datetime.datetime.now(tz=datetime.UTC)  # main start
     command_hint_print("rescue", quiet, "init")
 
     stem_pfp = calc_prot_fixed_points(0, *STMGeneModel().prot_fp_param)[-1]
@@ -637,7 +635,7 @@ def main_rescue(
             m_plot=True,
             bg_fill=True,
             title_annot_timecut=np.array([tc1, tc2, tc3, tc4]),
-            title_annot_label=["terminate", "recovery", " + ".join(["recovery", strategy_label])],
+            title_annot_label=["terminate", "recovery", f"recovery + {strategy_label}"],
             arrow_annot_pos=[0, stem_pfp_rescue],
             figName=name,
             figSize=size,
@@ -648,28 +646,28 @@ def main_rescue(
         )
         command_hint_print("rescue", quiet, "export", fig_name=name, extra=False)
 
-    m_end = datetime.now()
+    m_end = datetime.datetime.now(tz=datetime.UTC)
     command_hint_print("rescue", quiet, "end", time=(m_start, m_end))
 
 
 def main_bimap(
     num_samples: int,
-    T: List[float],
+    T: list[float],
     num_cycles: int,
     map_pixel: int,
-    kme_logrange: List[float],
-    pdem_logrange: List[float],
+    kme_logrange: list[float],
+    pdem_logrange: list[float],
     update_interval: float,
     quiet: bool,
-    prefix: Optional[str],
-    size: Optional[List[float]],
-    format: Optional[List[str]],
-    dpi: Optional[int],
+    prefix: str | None,
+    size: list[float] | None,
+    format: list[str] | None,
+    dpi: int | None,
     save_dir: str,
 ) -> None:
     """Implementation of main program subcommand `bimap`. See `main.py` for the parameter explanations."""
 
-    m_start = datetime.now()  # main start
+    m_start = datetime.datetime.now(tz=datetime.UTC)  # main start
     command_hint_print("bimap", quiet, "init")
 
     # sample points in parameter space
@@ -740,5 +738,5 @@ def main_bimap(
         )
         command_hint_print("bimap", quiet, "export", fig_name=name, extra=False)
 
-    m_end = datetime.now()
+    m_end = datetime.datetime.now(tz=datetime.UTC)
     command_hint_print("bimap", quiet, "end", time=(m_start, m_end))

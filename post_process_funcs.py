@@ -1,8 +1,8 @@
-from typing import Any, Tuple, Union
+from typing import Any
 
 import numpy as np
 
-__all__ = [
+__all__ = [  # noqa: RUF022
     "get_samples_mek_ratio",
     "get_samples_gene_activity",
     "get_samples_gene_P_onoff",
@@ -13,7 +13,7 @@ __all__ = [
 
 
 def get_samples_mek_ratio(
-    samples_meState: np.ndarray[Any, int], k: Union[int, Tuple[int, ...]]
+    samples_meState: np.ndarray[Any, int], k: int | tuple[int, ...]
 ) -> np.ndarray[Any, float]:
     """
     Compute percentage of specific methylation type over the whole gene locus of each sample.
@@ -24,7 +24,7 @@ def get_samples_mek_ratio(
     samples_meState : NDArray[int32], shape (N, T, H)
         Gillespie simulation result of methylation state, with each dimension represents trial
         (N), sampling time (T) and histone (H), respectively.
-    k : int32 | Tuple[int32, ...]
+    k : int32 | tuple[int32, ...]
         k-th methylation to be computed. Acceptable value: 0, 1, 2, 3.
 
     Returns
@@ -41,8 +41,8 @@ def get_samples_mek_ratio(
 
 
 def get_samples_gene_activity(
-    samples_transcrT: np.ndarray[Any, float], bins: int, range: Tuple[float, float]
-) -> Tuple[np.ndarray, np.ndarray]:
+    samples_transcrT: np.ndarray[Any, float], bins: int, range: tuple[float, float]
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Get histogram information of gene transcription. This function assumes 2-D input with
     multiple samples.
@@ -53,7 +53,7 @@ def get_samples_gene_activity(
         Transcription time for each sample in simulation, with extra spaces filled with NaN.
     bins : int32
         Number of bins in distribution histogram
-    range : Tuple[float, float]
+    range : tuple[float, float]
         Time range.
 
     Returns
@@ -75,7 +75,7 @@ def get_samples_gene_activity(
 
 def get_samples_gene_P_onoff(
     samples_meState: np.ndarray[Any, int], P_t: float
-) -> Tuple[np.ndarray[Any, float], np.ndarray[Any, float]]:
+) -> tuple[np.ndarray[Any, float], np.ndarray[Any, float]]:
     """
     Compute possibility of gene in activated or silent state. Gene is defined active when the
     ratio of inhibitory methylation (Pme23) exceeds `3*Pt/4`, and silent when Pme23 under `Pt/4`.

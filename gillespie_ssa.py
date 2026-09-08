@@ -1,11 +1,11 @@
-from typing import Any, Optional, Tuple
+from typing import Any
 
 import numba as nb
 import numba_progress as nbp
 import numpy as np
 from util_funcs import calc_beta, calc_E, calc_P_me23, calc_theta
 
-__all__ = [
+__all__ = [  # noqa: RUF022
     "gillespie_get_propensities",
     "gillespie_draw",
     "gillespie_ssa",
@@ -20,8 +20,8 @@ __all__ = [
     cache=True,
 )
 def gillespie_get_propensities(
-    protQuant: float, meState: np.ndarray[Any, int], all_param: Tuple[float, ...]
-) -> Tuple[np.ndarray[Any, float], np.ndarray[Any, float], float, float]:
+    protQuant: float, meState: np.ndarray[Any, int], all_param: tuple[float, ...]
+) -> tuple[np.ndarray[Any, float], np.ndarray[Any, float], float, float]:
     """
     Compute propensities of H3 methylation, H3 demethylation, gene transcription and protein
     degradation based on the current state.
@@ -32,7 +32,7 @@ def gillespie_get_propensities(
         Protein quantity.
     meState : NAarray[int32], shape (H,)
         Methylation state of chromatin H3 histone at target gene locus.
-    all_param : Tuple[float64, ...]
+    all_param : tuple[float64, ...]
         A 27-element tuple specify the model parameters value, in the order of `T`, `T_0`, `alpha`,
         `theta_max`, `sigma`, `K_d`, `f_min`, `f_max`, `f_lim`, `P_t`, `gamma_transcr`, `n_ppt`,
         `kappa`, `beta_max`, `b`, `e_distal`, `rho`, `k_me`, `P_dem`, `P_ex`, `k_me01`, `k_me12`,
@@ -88,7 +88,7 @@ def gillespie_get_propensities(
         protQuant, theta_max, sigma, K_d
     )  # transcriptional efficiencyactor-dependent activation level
     beta = calc_beta(T, T_0, beta_max, b=b)  # effective PRC2 activity
-    
+
     # compute propensities
     mePropensity = beta * (
         (gamma_me01 + k_me01 * E) * (meState == 0)
@@ -111,8 +111,8 @@ def gillespie_get_propensities(
     cache=True,
 )
 def gillespie_draw(
-    protQuant: float, meState: np.ndarray[Any, int], all_param: Tuple[float, ...]
-) -> Tuple[float, int, int]:
+    protQuant: float, meState: np.ndarray[Any, int], all_param: tuple[float, ...]
+) -> tuple[float, int, int]:
     """
     Draws a event and the time it took to do that event in a poisson process.
 
@@ -122,7 +122,7 @@ def gillespie_draw(
         Protein quantity.
     meState : NAarray[int32], shape (H,)
         Methylation state of chromatin H3 histone at target gene locus.
-    all_param : Tuple[float64, ...]
+    all_param : tuple[float64, ...]
         A 27-element tuple specify the model parameters value, in the order of `T`, `T_0`, `alpha`,
         `theta_max`, `sigma`, `K_d`, `f_min`, `f_max`, `f_lim`, `P_t`, `gamma_transcr`, `n_ppt`,
         `kappa`, `beta_max`, `b`, `e_distal`, `rho`, `k_me`, `P_dem`, `P_ex`, `k_me01`, `k_me12`,
@@ -177,10 +177,10 @@ def gillespie_ssa(
     protQuant0: float,
     meState0: np.ndarray[Any, int],
     time_to_next_repl0: float,
-    all_param: Tuple[float, ...],
+    all_param: tuple[float, ...],
     time_records: np.ndarray[Any, float],
     sizeFactor: float = 1.1,
-) -> Tuple[np.ndarray[Any, float], np.ndarray[Any, int], np.ndarray[Any, float]]:
+) -> tuple[np.ndarray[Any, float], np.ndarray[Any, int], np.ndarray[Any, float]]:
     """
     Gillespie stochastic simulation algorithm (SSA).
 
@@ -195,7 +195,7 @@ def gillespie_ssa(
         that. Note that if it set to 0.0 (in most case), then `protQuant0` and `meState0` refers
         to the model state at the very end of last cell cycle, and a cell division will do
         immediately.
-    all_param : Tuple[float64, ...]
+    all_param : tuple[float64, ...]
         A 27-element tuple specify the model parameters value, in the order of `T`, `T_0`, `alpha`,
         `theta_max`, `sigma`, `K_d`, `f_min`, `f_max`, `f_lim`, `P_t`, `gamma_transcr`, `n_ppt`,
         `kappa`, `beta_max`, `b`, `e_distal`, `rho`, `k_me`, `P_dem`, `P_ex`, `k_me01`, `k_me12`,
@@ -323,11 +323,11 @@ def gillespie_ssa_parallel(
     protQuant0: np.ndarray[Any, float],
     meState0: np.ndarray[Any, int],
     time_to_next_repl0: np.ndarray[Any, float],
-    all_param: Tuple[float, ...],
+    all_param: tuple[float, ...],
     time_records: np.ndarray[Any, float],
-    p_bar: Optional[nbp.ProgressBar] = None,
+    p_bar: nbp.ProgressBar | None = None,
     sizeFactor: float = 1.1,
-) -> Tuple[np.ndarray[Any, float], np.ndarray[Any, int], np.ndarray[Any, float]]:
+) -> tuple[np.ndarray[Any, float], np.ndarray[Any, int], np.ndarray[Any, float]]:
     """
     Multiple samples parallel version of function `gillespie_ssa.gillespie_ssa`, each sample is
     an independent parallel computing branch. This function provide a compatible API for class
@@ -344,7 +344,7 @@ def gillespie_ssa_parallel(
     time_to_next_repl0 : NDArray[float64], shape (N,)
         Time interval (unit: hour) between the simulation initiation time and the 1st DNA replication
         after that of each trial.
-    all_param : Tuple[float64, ...]
+    all_param : tuple[float64, ...]
         A 27-element tuple specify the model parameters value, in the order of `T`, `T_0`, `alpha`,
         `theta_max`, `sigma`, `K_d`, `f_min`, `f_max`, `f_lim`, `P_t`, `gamma_transcr`, `n_ppt`,
         `kappa`, `beta_max`, `b`, `e_distal`, `rho`, `k_me`, `P_dem`, `P_ex`, `k_me01`, `k_me12`,

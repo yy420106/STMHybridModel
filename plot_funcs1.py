@@ -1,18 +1,19 @@
+import datetime
 import os
-from datetime import datetime
-from typing import Any, Optional, Sequence, Tuple, Union
+from collections.abc import Sequence
+from typing import Any
 
 import matplotlib.pyplot as plt
-import mpl_toolkits.axisartist as axisartist
 import numpy as np
 import seaborn as sns
 from colorama import Fore, Style, init
 from cycler import cycler
 from matplotlib.colors import ListedColormap
 from model import STMGeneModel
+from mpl_toolkits import axisartist
 from util_funcs import calc_prot_fixed_points
 
-__all__ = [
+__all__ = [  # noqa: RUF022
     "verbose_print",
     "format_save",
     "plot_hint_print",
@@ -62,7 +63,7 @@ def verbose_print(message: str, quiet: bool) -> None:
 def format_save(
     figObj: plt.Figure,
     figName: str,
-    figFormat: Union[str, Sequence[str]],
+    figFormat: str | Sequence[str],
     save_dir: str,
     **kwargs: Any,
 ) -> None:
@@ -105,14 +106,16 @@ def plot_hint_print(func_name: str, quiet: bool, hint_type: str, **kwargs: Any) 
         )
 
     elif hint_type == "save":
-        format: Union[str, Sequence[str]] = kwargs["format"]  # `format` must be provided
+        format: str | Sequence[str] = kwargs["format"]  # `format` must be provided
         verbose_print(
             message=f"\t{Fore.GREEN + Style.BRIGHT}<{func_name}>{Style.RESET_ALL} Saving {'/'.join(format)} ...",
             quiet=quiet,
         )
 
     elif hint_type == "end":
-        time: Tuple[datetime, datetime] = kwargs["time"]  # `time` must be provided
+        time: tuple[datetime.datetime, datetime.datetime] = kwargs[
+            "time"
+        ]  # `time` must be provided
         verbose_print(
             message=(
                 f"\t{Fore.GREEN + Style.BRIGHT}<{func_name}>{Style.RESET_ALL} Done. "
@@ -126,11 +129,11 @@ def plot_hint_print(func_name: str, quiet: bool, hint_type: str, **kwargs: Any) 
 
 
 def plot_schematic_diagram1(
-    figName: Optional[str] = None,
-    figSize: Optional[Sequence[float]] = None,
-    figFormat: Union[str, Sequence[str], None] = None,
-    dpi: Optional[int] = None,
-    save_dir: Optional[str] = None,
+    figName: str | None = None,
+    figSize: Sequence[float] | None = None,
+    figFormat: str | Sequence[str] | None = None,
+    dpi: int | None = None,
+    save_dir: str | None = None,
     quiet: bool = False,
 ) -> None:
     """
@@ -140,7 +143,7 @@ def plot_schematic_diagram1(
     mathematical change, therefore they do not represent any pratical significance.
     """
 
-    p_start = datetime.now()
+    p_start = datetime.datetime.now(tz=datetime.UTC)
 
     # default set
     figName = "schematic_diagram1" if figName is None else figName
@@ -270,21 +273,21 @@ def plot_schematic_diagram1(
     plot_hint_print("plot_schematic_diagram1", quiet, "save", format=figFormat)
     format_save(fig, figName, figFormat, save_dir, dpi=dpi, bbox_inches="tight")
 
-    p_end = datetime.now()
+    p_end = datetime.datetime.now(tz=datetime.UTC)
     plot_hint_print("plot_schematic_diagram1", quiet, "end", time=(p_start, p_end))
 
 
 def plot_schematic_diagram2(
-    figName: Optional[str] = None,
-    figSize: Optional[Sequence[float]] = None,
-    figFormat: Union[str, Sequence[str], None] = None,
-    dpi: Optional[int] = None,
-    save_dir: Optional[str] = None,
+    figName: str | None = None,
+    figSize: Sequence[float] | None = None,
+    figFormat: str | Sequence[str] | None = None,
+    dpi: int | None = None,
+    save_dir: str | None = None,
     quiet: bool = False,
 ) -> None:
     """Base function for plotting model schematic diagram to illustrate branch theory."""
 
-    p_start = datetime.now()
+    p_start = datetime.datetime.now(tz=datetime.UTC)
 
     # default set
     figName = "schematic_diagram2" if figName is None else figName
@@ -386,18 +389,18 @@ def plot_schematic_diagram2(
     plot_hint_print("plot_schematic_diagram2", quiet, "save", format=figFormat)
     format_save(fig, figName, figFormat, save_dir, dpi=dpi, bbox_inches="tight")
 
-    p_end = datetime.now()
+    p_end = datetime.datetime.now(tz=datetime.UTC)
     plot_hint_print("plot_schematic_diagram2", quiet, "end", time=(p_start, p_end))
 
 
 def plot_evolution_heatmap(
     samples_meState: np.ndarray[Any, int],
     timeid_step: int,
-    figName: Optional[str] = None,
-    figSize: Optional[Sequence[float]] = None,
-    figFormat: Union[str, Sequence[str], None] = None,
-    dpi: Optional[int] = None,
-    save_dir: Optional[str] = None,
+    figName: str | None = None,
+    figSize: Sequence[float] | None = None,
+    figFormat: str | Sequence[str] | None = None,
+    dpi: int | None = None,
+    save_dir: str | None = None,
     quiet: bool = False,
 ) -> None:
     """
@@ -412,7 +415,7 @@ def plot_evolution_heatmap(
         Step of index in time axis to plot.
     """
 
-    p_start = datetime.now()
+    p_start = datetime.datetime.now(tz=datetime.UTC)
 
     # default set
     figName = "evolution_heatmap" if figName is None else figName
@@ -446,7 +449,7 @@ def plot_evolution_heatmap(
         "Time ",
         xy=(0.81 * x2, y2 * 1.07),
         xytext=(0.2 * x2, y2 * 1.07),
-        arrowprops=dict(width=1, headwidth=5, color="black"),
+        arrowprops={"width": 1, "headwidth": 5, "color": "black"},
         fontsize=16,
         font="Arial",
         weight="bold",
@@ -478,7 +481,7 @@ def plot_evolution_heatmap(
     plot_hint_print("plot_evolution_heatmap", quiet, "save", format=figFormat)
     format_save(fig, figName, figFormat, save_dir, dpi=dpi, bbox_inches="tight")
 
-    p_end = datetime.now()
+    p_end = datetime.datetime.now(tz=datetime.UTC)
     plot_hint_print("plot_evolution_heatmap", quiet, "end", time=(p_start, p_end))
 
 
@@ -487,11 +490,11 @@ def plot_cell_distribution_after_recov(
     count_days: Sequence[float],
     diff_ratio: np.ndarray[Any, float],
     stem_ratio: np.ndarray[Any, float],
-    figName: Optional[str] = None,
-    figSize: Optional[Sequence[float]] = None,
-    figFormat: Union[str, Sequence[str], None] = None,
-    dpi: Optional[int] = None,
-    save_dir: Optional[str] = None,
+    figName: str | None = None,
+    figSize: Sequence[float] | None = None,
+    figFormat: str | Sequence[str] | None = None,
+    dpi: int | None = None,
+    save_dir: str | None = None,
     quiet: bool = False,
 ) -> None:
     """
@@ -509,7 +512,7 @@ def plot_cell_distribution_after_recov(
         Stem-restored cell proportion data.
     """
 
-    p_start = datetime.now()
+    p_start = datetime.datetime.now(tz=datetime.UTC)
 
     # default set
     figName = "cell_distribution_after_recov" if figName is None else figName
@@ -585,7 +588,7 @@ def plot_cell_distribution_after_recov(
     plot_hint_print("plot_cell_distribution_after_recov", quiet, "save", format=figFormat)
     format_save(fig, figName, figFormat, save_dir, dpi=dpi, bbox_inches="tight")
 
-    p_end = datetime.now()
+    p_end = datetime.datetime.now(tz=datetime.UTC)
     plot_hint_print("plot_cell_distribution_after_recov", quiet, "end", time=(p_start, p_end))
 
 
@@ -594,12 +597,12 @@ def plot_bistability_map(
     axis0_ticks: np.ndarray[Any, float],
     axis1_ticks: np.ndarray[Any, float],
     T: float,
-    scatter_points: Optional[Sequence[Tuple[float, float]]] = None,
-    figName: Optional[str] = None,
-    figSize: Optional[Sequence[float]] = None,
-    figFormat: Union[str, Sequence[str], None] = None,
-    dpi: Optional[int] = None,
-    save_dir: Optional[str] = None,
+    scatter_points: Sequence[tuple[float, float]] | None = None,
+    figName: str | None = None,
+    figSize: Sequence[float] | None = None,
+    figFormat: str | Sequence[str] | None = None,
+    dpi: int | None = None,
+    save_dir: str | None = None,
     quiet: bool = False,
 ) -> None:
     """
@@ -615,11 +618,11 @@ def plot_bistability_map(
         1-D array that specify the horizontal dimension ticks.
     T: float64:
         Cell cyle.
-    scatter_points: Sequence[Tuple[float, float]] (optional)
+    scatter_points: Sequence[tuple[float, float]] (optional)
         Coordinates of points that to be scatter on plot.
     """
 
-    p_start = datetime.now()
+    p_start = datetime.datetime.now(tz=datetime.UTC)
 
     # default set
     figName = "bistability_map" if figName is None else figName
@@ -692,5 +695,5 @@ def plot_bistability_map(
     plot_hint_print("plot_bistability_map", quiet, "save", format=figFormat)
     format_save(fig, figName, figFormat, save_dir, dpi=dpi, bbox_inches="tight")
 
-    p_end = datetime.now()
+    p_end = datetime.datetime.now(tz=datetime.UTC)
     plot_hint_print("plot_bistability_map", quiet, "end", time=(p_start, p_end))

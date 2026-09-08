@@ -1,5 +1,5 @@
 import math
-from typing import Any, List, Optional, Tuple, Union, Self
+from typing import Any, Self
 
 import numba_progress as nbp
 import numpy as np
@@ -23,10 +23,10 @@ class STMGeneModel(Parameters):
     def __init__(
         self,
         N: int = 1,
-        protQuant: Union[float, np.ndarray[Any, float], None] = None,
-        meState: Optional[np.ndarray[Any, int]] = None,
-        meState_fastBuild: Union[int, Tuple[int, ...]] = -1,
-        time_to_next_repl: Union[float, np.ndarray[Any, float], None] = None,
+        protQuant: float | np.ndarray[Any, float] | None = None,
+        meState: np.ndarray[Any, int] | None = None,
+        meState_fastBuild: int | tuple[int, ...] = -1,
+        time_to_next_repl: float | np.ndarray[Any, float] | None = None,
         time: float = 0.0,
         **kwargs: float,
     ) -> None:
@@ -44,7 +44,7 @@ class STMGeneModel(Parameters):
             Methylation state of H3 histone at target gene locus in each sub-model. If a 1-D array
             is passed, it will be broadcasted to all sub-models. Note that this parameter has a
             higher priority than `meState_fastBuild`.
-        meState_fastBuild : int32 | Tuple[int32, ...] (default=-1)
+        meState_fastBuild : int32 | tuple[int32, ...] (default=-1)
             Fast building method of chromatin methylation state. It should be a integer or a tuple
             of integer represents the building method for each sub-model, in the latter case, the
             tuple length must be N. Only -1, 0, 1, 2 or 3 is valid, where -1 use random setting
@@ -63,7 +63,7 @@ class STMGeneModel(Parameters):
 
         Attributes
         ----------
-        self.param_dict : Dict[str, float64] (inherited from class `Parameters`)
+        self.param_dict : dict[str, float64] (inherited from class `Parameters`)
         self.H : int32
         self.N : int32
         self.protQuant : NDArray[float64], shape (N,)
@@ -75,7 +75,7 @@ class STMGeneModel(Parameters):
         assert N > 0, "The number of sub-models must be greater than 0."
 
         # initialize class attributes
-        super(STMGeneModel, self).__init__(**kwargs)  # build attributes 'param_dict'
+        super().__init__(**kwargs)  # build attributes 'param_dict'
 
         self.H = 2 * math.ceil(self.__L / 200)  # number of H3 histones; a nucleosome ~200bp
         self.N = N
@@ -167,11 +167,11 @@ class STMGeneModel(Parameters):
         self.time = time
 
     @property
-    def all_param(self) -> Tuple[float, ...]:
+    def all_param(self) -> tuple[float, ...]:
         return super().get_param(param_names="all")
 
     @property
-    def prot_fp_param(self) -> Tuple[float, ...]:
+    def prot_fp_param(self) -> tuple[float, ...]:
         return super().get_param(param_names="prot_fp")
 
     def set_free_param(self, **kwargs: float) -> None:
@@ -202,7 +202,7 @@ class STMGeneModel(Parameters):
 
     def get_propensities(
         self,
-    ) -> List[Tuple[np.ndarray[Any, float], np.ndarray[Any, float], float, float]]:
+    ) -> list[tuple[np.ndarray[Any, float], np.ndarray[Any, float], float, float]]:
         """
         Compute current propensities of 4 possible event: H3 methylation, H3 demethylation, gene
         transcription & protein degreadtion for each sample.
@@ -215,7 +215,7 @@ class STMGeneModel(Parameters):
             for i in range(self.N)
         ]
 
-    def get_fixed_points(self) -> List[np.ndarray[Any, float]]:
+    def get_fixed_points(self) -> list[np.ndarray[Any, float]]:
         """
         Compute the fixed number of protein molecules for each sample. Return a list containing N
         arrays.
@@ -229,9 +229,9 @@ class STMGeneModel(Parameters):
         self,
         ev_time: float,
         time_step: float,
-        p_bar: Optional[nbp.ProgressBar] = None,
+        p_bar: nbp.ProgressBar | None = None,
         sizeFactor: float = 1.1,
-    ) -> Tuple[
+    ) -> tuple[
         np.ndarray[Any, float],
         np.ndarray[Any, float],
         np.ndarray[Any, int],
@@ -332,7 +332,7 @@ class STMGeneModel(Parameters):
         )
 
         # save parameters
-        kwargs = {key: model.param_dict[key] for key in model.default_free_param_dict().keys()}
+        kwargs = {key: model.param_dict[key] for key in model.default_free_param_dict()}
 
         if indices_or_condition.dtype == int:
             # indices
