@@ -23,7 +23,7 @@ This program contains 6 subcommands to perform different tasks:
 Before running, make sure that your environment contains the necessary dependencies, which are listed in the `pyproject.toml` file.
 
 
-### Example Usage
+## Example Usage
 Here we provide some examples of running the programs.
 
 You can use `-h/--help` option to get help information about the subcommands and their argument hints:
@@ -34,7 +34,7 @@ python main.py schmdg -h
 python main.py divarrest -h
 ```
 
-#### schmdg
+### schmdg
 ```shell
 # schematic diagram
 
@@ -43,7 +43,7 @@ python main.py schmdg -d
 # -d/--display: display all plotted figures before the program exits
 ```
 
-#### epistb
+### epistb
 ```shell
 # epigenetic stability
 
@@ -60,7 +60,7 @@ python main.py epistb -ns 80 -et 0 3 -md 40 -ts 10 -d -t
 # -t/--temp: export files to command temp folder
 ```
 
-#### dynmcyc
+### dynmcyc
 ```shell
 # dynamic cell cycle
 
@@ -70,7 +70,7 @@ python main.py dynmcyc -ns 80 -df 0.5 3 -ec 12 -md 30 -d
 # -ec/--equi_cycles: cell cycle numbers in pre-equilibrium
 ```
 
-#### divarrest
+### divarrest
 ```shell
 # division arrest
 
@@ -85,7 +85,7 @@ python main.py divarrest -ns 800 -ec 12 -md 35 -ad 1 3 5 7 9 11 13 15 17 19 -ps 
 ```
 **Note:** If you want to explore the **alternative model** (Extended Data Fig. 12a-d), in which the cycle-related parameters are excluded, please turn to function `_calc_beta` (**line 81-108**) in `util_funcs.py`, and **swap the comment state between line 105 and 106** before running the scripts.
 
-#### rescue
+### rescue
 ```shell
 # rescue experiments
 
@@ -98,7 +98,7 @@ python main.py rescue -ns 80 -rs M A -pr 0.85 -ag 0.05 -ad 20 -td 25 -rd 5 -d
 # -rd/--rest_days: days of resting state before rescue
 ```
 
-#### bimap
+### bimap
 ```shell
 # bistability heatmap
 
