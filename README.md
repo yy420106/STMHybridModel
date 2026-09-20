@@ -6,7 +6,7 @@ A hybrid model describing the biological dynamics of STM in pluripotent/differen
 The python scripts (interface: `main.py`) provid a CLI style program, for simulation and visualization of a hybrid model constructed at *SHOOT MERISTEMLESS* (*STM*) gene locus in *Arabidopsis thaliana*. The model combines multiple biological process, e.g., gene expression, chromatin modification (mainly methylation), protein degration and cell division, etc., in a whole system to explain some experimental observations. To simulate the series of biological events, we use the **Gillespie's stochastic simulation algorithm** (**SSA**).  
 
 This model is adopted in the following paper:
-- Cell cycle-driven epigenetic resetting maintains meristematic cell fate for shoot branching. (**Accepted by *Nature Plants***)
+- Cell cycle-driven epigenetic resetting maintains meristematic cell fate for shoot branching. [DOI: xxx]. (**Under review**)
 
 An example of implementing SSA in biocircuits is presented in **[biocircuits_ssa_tutorial.ipynb](./assets/biocircuits_ssa_tutorial.ipynb)**. For a elaborate introduction of this model, see **[STMHybridModel_intro.pdf](./assets/STMHybridModel_intro-latest.pdf)**.
 
